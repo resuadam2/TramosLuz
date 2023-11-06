@@ -63,12 +63,23 @@
         app:layout_constraintTop_toBottomOf="@id/tvTime"
         app:layout_constraintVertical_bias="0.0" />
 
-
+    <TextView
+        android:id="@+id/tvTramoActual"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/tramoActual"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/updateFromSystem"
+        app:layout_constraintVertical_bias="0.0" />
     <TextView
         android:id="@+id/tvTramo"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tramoHeight"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:background="@color/cardview_dark_background"
         android:gravity="center_vertical"
         android:text="@string/tramo"
@@ -78,14 +89,27 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/updateFromSystem"
+        app:layout_constraintTop_toBottomOf="@id/tvTramoActual"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tvSiguienteTramo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/tramoSiguiente"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTramo"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tvTramoNext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tramoHeight"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:gravity="center_vertical"
         android:background="@color/cardview_dark_background"
         android:text="@string/tramoNext"
@@ -95,6 +119,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTramo"
+        app:layout_constraintTop_toBottomOf="@id/tvSiguienteTramo"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tvCuentaAtras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/countdown"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTramoNext"
         app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

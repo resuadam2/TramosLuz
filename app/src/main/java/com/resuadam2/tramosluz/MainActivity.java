@@ -2,6 +2,7 @@ package com.resuadam2.tramosluz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
@@ -24,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
     protected static final int TRAMO3 = 19; // 19 a 23
     protected static final int COLOR_TRAMO3 = Color.RED; // 19 a 23
 
-    TextView tvTime;
+    TextView tvTime; // TextView de la hora
 
-    Button updateFromSystem, updateFromText;
+    Button updateFromSystem, updateFromText; // Botones para actualizar la hora
 
-    TextView tvTramo, tvTramoNext;
+    TextView tvTramo, tvTramoNext, tvCuentaAtras; // Tramo actual, tramo siguiente y cuenta atrás
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +41,15 @@ public class MainActivity extends AppCompatActivity {
         updateFromText = (Button) findViewById(R.id.updateFromEditText);
         tvTramo = (TextView) findViewById(R.id.tvTramo);
         tvTramoNext = (TextView) findViewById(R.id.tvTramoNext);
+        tvCuentaAtras = (TextView) findViewById(R.id.tvCuentaAtras);
 
         updateFromSystem();
 
 
-        // TODO setear al edit text la hora actual y al tvTramo el color y el nombre correspondientes
-
-        updateFromText.setOnClickListener(view -> updateFromText(tvTime.getText().toString()));
+        updateFromText.setOnClickListener(view -> updateFromPicker());
         updateFromSystem.setOnClickListener(view -> updateFromSystem());
     }
+
 
     /**
      * Calcula el tramo en el que se encuentra la hora pasada por parámetro
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             tvTramoNext.setText("Tramo llano");
             tvTramoNext.setBackgroundColor(Color.GREEN);
         }
+        tvCuentaAtras.setText(calcularCuentaAtras(instance));
     }
 
 
@@ -85,6 +87,60 @@ public class MainActivity extends AppCompatActivity {
         calcularTramo(calendar);
     }
 
-    private void updateFromText(String toString) {
+    /**
+     * Actualiza el TextView de la hora con la hora seleccionada en el TimePicker
+     */
+    private void updateFromPicker() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            calendar.set(Calendar.MINUTE, minute);
+            tvTime.setText(new SimpleDateFormat("HH:mm").format(calendar.getTime()));
+            calcularTramo(calendar);
+        }, Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), true);
+        timePickerDialog.show();
+
+    }
+
+    /**
+     * Método que calcula cuánto tiempo falta para el siguiente tramo y devuelve un String con el resultado
+     * en formato HH:mm:ss
+     * @param instance Hora actual
+     *                 @return String con el tiempo restante para el siguiente tramo
+     */
+    private String calcularCuentaAtras(Calendar instance) {
+        int hora = instance.get(Calendar.HOUR_OF_DAY);
+        int minuto = instance.get(Calendar.MINUTE);
+        int segundo = instance.get(Calendar.SECOND);
+        int milisegundo = instance.get(Calendar.MILLISECOND);
+
+        int horaSiguiente = 0;
+        int minutoSiguiente = 0;
+        int segundoSiguiente = 0;
+        int milisegundoSiguiente = 0;
+
+        if (hora >= TRAMO1 && hora < TRAMO2) {
+            horaSiguiente = TRAMO2;
+        } else if (hora >= TRAMO2 && hora < TRAMO3) {
+            horaSiguiente = TRAMO3;
+        } else {
+            horaSiguiente = TRAMO1;
+        }
+
+        minutoSiguiente = 0;
+        segundoSiguiente = 0;
+        milisegundoSiguiente = 0;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, horaSiguiente);
+        calendar.set(Calendar.MINUTE, minutoSiguiente);
+        calendar.set(Calendar.SECOND, segundoSiguiente);
+        calendar.set(Calendar.MILLISECOND, milisegundoSiguiente);
+
+        long diferencia = calendar.getTimeInMillis() - instance.getTimeInMillis();
+
+        Date date = new Date(diferencia);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        return simpleDateFormat.format(date);
     }
 }
