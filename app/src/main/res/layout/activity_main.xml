@@ -18,13 +18,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <EditText
-        android:id="@+id/etTime"
+    <TextView
+        android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:inputType="time"
+        android:gravity="center_horizontal"
+        android:text="@string/timeExample"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +44,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etTime"
+        app:layout_constraintTop_toBottomOf="@id/tvTime"
         app:layout_constraintVertical_bias="0.0" />
 
     <!-- sustituible por un listener en el edit Text -->
@@ -58,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/updateFromSystem"
-        app:layout_constraintTop_toBottomOf="@id/etTime"
+        app:layout_constraintTop_toBottomOf="@id/tvTime"
         app:layout_constraintVertical_bias="0.0" />
 
 
@@ -68,6 +70,7 @@
         android:layout_height="@dimen/tramoHeight"
         android:layout_marginTop="32dp"
         android:background="@color/cardview_dark_background"
+        android:gravity="center_vertical"
         android:text="@string/tramo"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -76,5 +79,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/updateFromSystem"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tvTramoNext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tramoHeight"
+        android:layout_marginTop="32dp"
+        android:gravity="center_vertical"
+        android:background="@color/cardview_dark_background"
+        android:text="@string/tramoNext"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTramo"
         app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

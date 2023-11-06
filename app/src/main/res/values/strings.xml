@@ -4,4 +4,6 @@
     <string name="tramo">Tramo por defecto</string>
     <string name="updateFromSystem">Actualizar\ndesde el Reloj</string>
     <string name="updateFromEditText">Actualizar\ndesde Selección</string>
+    <string name="tramoNext">Siguiente tramo</string>
+    <string name="timeExample">00:00</string>
 </resources>
