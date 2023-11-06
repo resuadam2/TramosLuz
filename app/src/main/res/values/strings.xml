@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TramosLuz</string>
+    <string name="title">SImulador de tramos energéticos</string>
+    <string name="tramo">Tramo por defecto</string>
+    <string name="updateFromSystem">Actualizar \n desde el Reloj</string>
+    <string name="updateFromEditText">Actualizar \n desde Selección</string>
+</resources>
