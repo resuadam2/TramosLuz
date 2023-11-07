@@ -8,6 +8,6 @@
     <string name="timeExample">00:00</string>
     <string name="tramoActual">Tramo actual:</string>
     <string name="tramoSiguiente">Siguiente tramo:</string>
-    <string name="countdown">"Tiempo hasta el siguiente tramo: "</string>
+    <string name="countdown">"Cuanta atrás hasta el siguiente tramo: "</string>
     <string name="cuentaAtras">Hasta el siguiente tramo:</string>
 </resources>

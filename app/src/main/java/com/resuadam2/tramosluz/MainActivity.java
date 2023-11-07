@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-    protected static final int TRAMO1 = 0; // 0 a 7
+    protected static final int TRAMO1 = 24; // 0 a 7
     protected static final int COLOR_TRAMO1 = Color.GREEN; // 0 a 7
 
     protected static final int TRAMO2 = 8; // 8 a 18
@@ -115,14 +115,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private long diferenciaTramos(Calendar instance) {
         int hora = instance.get(Calendar.HOUR_OF_DAY);
-        int minuto = instance.get(Calendar.MINUTE);
-        int segundo = instance.get(Calendar.SECOND);
-        int milisegundo = instance.get(Calendar.MILLISECOND);
 
         int horaSiguiente = 0;
-        int minutoSiguiente = 0;
-        int segundoSiguiente = 0;
-        int milisegundoSiguiente = 0;
 
         if (hora >= TRAMO1 && hora < TRAMO2) {
             horaSiguiente = TRAMO2;
@@ -132,11 +126,13 @@ public class MainActivity extends AppCompatActivity {
             horaSiguiente = TRAMO1;
         }
 
-        minutoSiguiente = 0;
-        segundoSiguiente = 0;
-        milisegundoSiguiente = 0;
+        int minutoSiguiente = 0;
+        int segundoSiguiente = 0;
+        int milisegundoSiguiente = 0;
 
         Calendar calendar = Calendar.getInstance();
+        // TODO Aqui hay un posible problema, si ponemos el -1 hace bien la diferencia pero
+        //  si no lo ponemos no inicia la cuenta atras
         calendar.set(Calendar.HOUR_OF_DAY, horaSiguiente - 1);
         calendar.set(Calendar.MINUTE, minutoSiguiente);
         calendar.set(Calendar.SECOND, segundoSiguiente);
@@ -164,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
      * @param instance Hora actual
      */
     private void startCountDown(Calendar instance) {
-        stopCountDown();
+        if(countDown != null) stopCountDown();
         countDown = new CountDown(diferenciaTramos(instance), 1000);
         countDown.start();
     }
@@ -192,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Método que se ejecuta cada segundo y actualiza el editText de la cuenta atrás
-         * @param millisUntilFinished
+         * @param millisUntilFinished Tiempo restante de la cuenta atrás
          */
         @Override
         public void onTick(long millisUntilFinished) {
