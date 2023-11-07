@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button updateFromSystem, updateFromText; // Botones para actualizar la hora
 
-    TextView tvTramo, tvTramoNext, tvCuentaAtras; // Tramo actual, tramo siguiente y cuenta atrás
+    TextView tvTramo, tvTramoNext, tvSiguienteTramo, tvCuentaAtras; // Tramo actual, tramo siguiente y cuenta atrás
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +42,11 @@ public class MainActivity extends AppCompatActivity {
         updateFromSystem = (Button) findViewById(R.id.updateFromSystem);
         updateFromText = (Button) findViewById(R.id.updateFromEditText);
         tvTramo = (TextView) findViewById(R.id.tvTramo);
+        tvSiguienteTramo = (TextView) findViewById(R.id.tvSiguienteTramo);
         tvTramoNext = (TextView) findViewById(R.id.tvTramoNext);
         tvCuentaAtras = (TextView) findViewById(R.id.tvCuentaAtras);
 
-        updateFromSystem();
+        updateFromSystem(); // Actualiza la hora con la hora del sistema
 
 
         updateFromText.setOnClickListener(view -> updateFromPicker());
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Calcula el tramo en el que se encuentra la hora pasada por parámetro
      * actualiza el TextView del tramo, su texto y el color de fondo
-     * @param instance
+     * @param instance Hora actual
      */
     private void calcularTramo(Calendar instance) {
         int hora = instance.get(Calendar.HOUR_OF_DAY);
@@ -74,11 +77,15 @@ public class MainActivity extends AppCompatActivity {
             tvTramoNext.setText("Tramo llano");
             tvTramoNext.setBackgroundColor(Color.GREEN);
         }
-        tvCuentaAtras.setText(calcularCuentaAtras(instance));
+        tvSiguienteTramo.setText(this.getString(R.string.tramoSiguiente) + " " + calcularCuentaAtras(instance));
+        startCountDown(instance);
     }
 
 
-
+    /**
+     * Actualiza el TextView de la hora con la hora actual del sistema
+     * y calcula el tramo en el que se encuentra
+     */
     private void updateFromSystem() {
         Calendar calendar = Calendar.getInstance();
         Toast.makeText(this, "Hora actual " +
@@ -99,16 +106,14 @@ public class MainActivity extends AppCompatActivity {
             calcularTramo(calendar);
         }, Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), true);
         timePickerDialog.show();
-
     }
 
     /**
-     * Método que calcula cuánto tiempo falta para el siguiente tramo y devuelve un String con el resultado
-     * en formato HH:mm:ss
+     * Método que calcula cuánto tiempo falta para el siguiente tramo
      * @param instance Hora actual
-     *                 @return String con el tiempo restante para el siguiente tramo
+     * @return long con el tiempo restante para el siguiente tramo
      */
-    private String calcularCuentaAtras(Calendar instance) {
+    private long diferenciaTramos(Calendar instance) {
         int hora = instance.get(Calendar.HOUR_OF_DAY);
         int minuto = instance.get(Calendar.MINUTE);
         int segundo = instance.get(Calendar.SECOND);
@@ -132,15 +137,78 @@ public class MainActivity extends AppCompatActivity {
         milisegundoSiguiente = 0;
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, horaSiguiente);
+        calendar.set(Calendar.HOUR_OF_DAY, horaSiguiente - 1);
         calendar.set(Calendar.MINUTE, minutoSiguiente);
         calendar.set(Calendar.SECOND, segundoSiguiente);
         calendar.set(Calendar.MILLISECOND, milisegundoSiguiente);
 
         long diferencia = calendar.getTimeInMillis() - instance.getTimeInMillis();
+        return diferencia;
+    }
 
-        Date date = new Date(diferencia);
+    /**
+     * Método que calcula cuánto tiempo falta para el siguiente tramo y lo devuelve en formato String
+     * @param instance Hora actual
+     * @return String con el tiempo restante para el siguiente tramo
+     */
+    private String calcularCuentaAtras(Calendar instance) {
+        Date date = new Date(diferenciaTramos(instance));
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         return simpleDateFormat.format(date);
+    }
+
+    CountDown countDown;
+    /**
+     * Método que inicia la cuenta atrás y actualiza el TextView de la cuenta atrás
+     * la cuenta atrás se actualiza cada segundo
+     * @param instance Hora actual
+     */
+    private void startCountDown(Calendar instance) {
+        stopCountDown();
+        countDown = new CountDown(diferenciaTramos(instance), 1000);
+        countDown.start();
+    }
+
+    /**
+     * Método que para la cuenta atrás y actualiza el TextView de la cuenta atrás
+     */
+    private void stopCountDown() {
+        countDown.cancel();
+        tvCuentaAtras.setText("00:00:00");
+    }
+
+    /**
+     * Clase que extiende de CountDownTimer y se encarga de la cuenta atrás
+     */
+    public class CountDown  extends CountDownTimer {
+        /**
+         * Constructor de la clase
+         * @param millisInFuture Tiempo total de la cuenta atrás
+         * @param countDownInterval Intervalo de la cuenta atrás
+         */
+        public CountDown(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        /**
+         * Método que se ejecuta cada segundo y actualiza el editText de la cuenta atrás
+         * @param millisUntilFinished
+         */
+        @Override
+        public void onTick(long millisUntilFinished) {
+            Date date = new Date(millisUntilFinished);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+            tvCuentaAtras.setText(simpleDateFormat.format(date));
+        }
+
+        /**
+         * Método que se ejecuta cuando la cuenta atrás termina
+         * Lanza un Toast y para la cuenta atrás
+         */
+        @Override
+        public void onFinish() {
+            Toast.makeText(MainActivity.this, "Cuenta atrás terminada", Toast.LENGTH_SHORT).show();
+            stopCountDown();
+        }
     }
 }
