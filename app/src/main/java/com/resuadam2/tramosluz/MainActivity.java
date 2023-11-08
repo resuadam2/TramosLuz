@@ -15,10 +15,11 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
-    protected static final int TRAMO1 = 24; // 0 a 7
+    protected static final int TRAMO1 = 0; // 0 a 7
     protected static final int COLOR_TRAMO1 = Color.GREEN; // 0 a 7
 
     protected static final int TRAMO2 = 8; // 8 a 18
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         updateFromSystem(); // Actualiza la hora con la hora del sistema
 
 
+        tvTime.setOnClickListener(view -> updateFromPicker()); // Al pulsar en la hora se abre el TimePicker
         updateFromText.setOnClickListener(view -> updateFromPicker());
         updateFromSystem.setOnClickListener(view -> updateFromSystem());
     }
@@ -115,28 +117,25 @@ public class MainActivity extends AppCompatActivity {
      */
     private long diferenciaTramos(Calendar instance) {
         int hora = instance.get(Calendar.HOUR_OF_DAY);
+        int dia = instance.get(Calendar.DAY_OF_MONTH);
 
         int horaSiguiente = 0;
 
-        if (hora >= TRAMO1 && hora < TRAMO2) {
+        if (hora < TRAMO2) {
             horaSiguiente = TRAMO2;
-        } else if (hora >= TRAMO2 && hora < TRAMO3) {
+        } else if (hora < TRAMO3) {
             horaSiguiente = TRAMO3;
         } else {
             horaSiguiente = TRAMO1;
+            dia++;
         }
 
-        int minutoSiguiente = 0;
-        int segundoSiguiente = 0;
-        int milisegundoSiguiente = 0;
-
         Calendar calendar = Calendar.getInstance();
-        // TODO Aqui hay un posible problema, si ponemos el -1 hace bien la diferencia pero
-        //  si no lo ponemos no inicia la cuenta atras
-        calendar.set(Calendar.HOUR_OF_DAY, horaSiguiente - 1);
-        calendar.set(Calendar.MINUTE, minutoSiguiente);
-        calendar.set(Calendar.SECOND, segundoSiguiente);
-        calendar.set(Calendar.MILLISECOND, milisegundoSiguiente);
+        calendar.setTimeZone(instance.getTimeZone());
+        calendar.set(Calendar.DAY_OF_MONTH, dia);
+        calendar.set(Calendar.HOUR_OF_DAY, horaSiguiente);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
 
         long diferencia = calendar.getTimeInMillis() - instance.getTimeInMillis();
         return diferencia;
@@ -148,12 +147,12 @@ public class MainActivity extends AppCompatActivity {
      * @return String con el tiempo restante para el siguiente tramo
      */
     private String calcularCuentaAtras(Calendar instance) {
-        Date date = new Date(diferenciaTramos(instance));
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-        return simpleDateFormat.format(date);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return simpleDateFormat.format(diferenciaTramos(instance));
     }
 
-    CountDown countDown;
+    CountDown countDown; // Cuenta atrás
     /**
      * Método que inicia la cuenta atrás y actualiza el TextView de la cuenta atrás
      * la cuenta atrás se actualiza cada segundo
@@ -192,9 +191,9 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         public void onTick(long millisUntilFinished) {
-            Date date = new Date(millisUntilFinished);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-            tvCuentaAtras.setText(simpleDateFormat.format(date));
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            tvCuentaAtras.setText(simpleDateFormat.format(millisUntilFinished));
         }
 
         /**
